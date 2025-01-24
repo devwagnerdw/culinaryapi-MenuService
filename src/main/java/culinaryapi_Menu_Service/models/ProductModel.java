@@ -1,6 +1,7 @@
 package culinaryapi_Menu_Service.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import culinaryapi_Menu_Service.enums.Category;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -22,6 +23,10 @@ public class ProductModel {
     @Column
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Category category;
+
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -32,13 +37,9 @@ public class ProductModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime creationDate;
 
-    @Column(nullable = false)
+    @Column()
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private CategoryModel category;
 
 
     public UUID getId() {
@@ -63,6 +64,14 @@ public class ProductModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public BigDecimal getPrice() {
@@ -97,11 +106,4 @@ public class ProductModel {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public CategoryModel getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryModel category) {
-        this.category = category;
-    }
 }
