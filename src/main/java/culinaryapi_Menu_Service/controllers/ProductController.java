@@ -1,6 +1,7 @@
 package culinaryapi_Menu_Service.controllers;
 
 import culinaryapi_Menu_Service.dtos.ProductDto;
+import culinaryapi_Menu_Service.enums.Category;
 import culinaryapi_Menu_Service.models.ProductModel;
 import culinaryapi_Menu_Service.services.ProductService;
 import jakarta.validation.Valid;
@@ -48,7 +49,7 @@ public class ProductController {
                                                       @RequestBody @Valid ProductDto productDto){
         Optional<ProductModel> optionalProductModel= productService.findBayId(id);
         if (optionalProductModel.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("USUARIO NÃO ENCONCTRADO");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }
         var productModel = optionalProductModel.get();
 
@@ -61,6 +62,22 @@ public class ProductController {
         productService.save(productModel);
         return ResponseEntity.status(HttpStatus.OK).body(productModel);
 
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<Page<ProductModel>> getProductsByCategory(@PathVariable String category,
+                                                                    @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        try {
+            Category categoryEnum = Category.valueOf(category.toUpperCase());
+            Page<ProductModel> products = productService.findByCategory(categoryEnum, pageable);
+            if (products.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(products);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 

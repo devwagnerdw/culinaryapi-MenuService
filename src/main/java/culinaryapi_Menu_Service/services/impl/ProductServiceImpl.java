@@ -42,4 +42,9 @@ public class ProductServiceImpl implements ProductService {
     public Optional<ProductModel> findBayId(UUID id) {
         return productRepository.findById(id);
     }
+
+    @Override
+    public Page<ProductModel> findByCategory(Category category, Pageable pageable) {
+        return productRepository.findByCategory(category,pageable);
+    }
 }

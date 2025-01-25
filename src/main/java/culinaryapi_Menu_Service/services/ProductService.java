@@ -18,4 +18,6 @@ public interface ProductService {
     Page<ProductModel> findAll(Pageable pageable);
 
     Optional<ProductModel> findBayId(UUID id);
+
+    Page<ProductModel> findByCategory(Category category, Pageable pageable);
 }
