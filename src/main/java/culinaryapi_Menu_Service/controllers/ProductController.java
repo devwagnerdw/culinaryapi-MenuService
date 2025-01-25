@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,7 +30,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Object>registerProduct(@Valid @RequestBody  ProductDto productDto){
+    public ResponseEntity<Object>registerProduct( @RequestBody  ProductDto productDto){
 
         if (productService.existsByname(productDto.getName())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already Taken!");
@@ -41,11 +43,33 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
     };
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateProduct(@PathVariable(value="id")UUID id,
+                                                      @RequestBody @Valid ProductDto productDto){
+        Optional<ProductModel> optionalProductModel= productService.findBayId(id);
+        if (optionalProductModel.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("USUARIO NÃO ENCONCTRADO");
+        }
+        var productModel = optionalProductModel.get();
+
+        productModel.setName(productDto.getName());
+        productModel.setDescription(productDto.getDescription());
+        productModel.setPrice(productDto.getPrice());
+        productModel.setAvailable(productDto.getAvailable());
+        productModel.setCategory(productDto.getCategory());
+        productModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        productService.save(productModel);
+        return ResponseEntity.status(HttpStatus.OK).body(productModel);
+
+    }
+
+
     @GetMapping
-    public ResponseEntity<Page<ProductModel>> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "Id", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<ProductModel>> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "Id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ProductModel> productModels = productService.findAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(productModels);
     }
+
 
 }
 

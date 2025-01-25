@@ -1,7 +1,7 @@
 package culinaryapi_Menu_Service.dtos;
 
 import culinaryapi_Menu_Service.enums.Category;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
@@ -10,7 +10,7 @@ public class ProductDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private Boolean isAvailable;
+    private Boolean available;
     private Category category;
 
     public String getName() {
@@ -38,11 +38,11 @@ public class ProductDto {
     }
 
     public Boolean getAvailable() {
-        return isAvailable;
+        return available;
     }
 
     public void setAvailable(Boolean available) {
-        isAvailable = available;
+        this.available = available;
     }
 
     public Category getCategory() {

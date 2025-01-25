@@ -9,6 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -36,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean existsByCategory(Category category) {
-        return productRepository.existsByCategory(category);
+    public Optional<ProductModel> findBayId(UUID id) {
+        return productRepository.findById(id);
     }
 }
