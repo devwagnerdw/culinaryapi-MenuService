@@ -1,11 +1,9 @@
 package culinaryapi_Menu_Service.controllers;
 
 import culinaryapi_Menu_Service.dtos.ProductDto;
-import culinaryapi_Menu_Service.enums.Category;
 import culinaryapi_Menu_Service.models.ProductModel;
 import culinaryapi_Menu_Service.services.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,9 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,62 +26,29 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Object>registerProduct( @RequestBody  ProductDto productDto){
-
-        if (productService.existsByname(productDto.getName())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already Taken!");
+    public ResponseEntity<Object> registerProduct(@RequestBody @Valid ProductDto productDto) {
+        try {
+            ProductModel productModel = productService.registerProduct(productDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
-        var productModel = new ProductModel();
-        BeanUtils.copyProperties(productDto,productModel);
-        productModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
-        productModel.setAvailable(true);
-        productService.save(productModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
-    };
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateProduct(@PathVariable(value="id")UUID id,
-                                                      @RequestBody @Valid ProductDto productDto){
-        Optional<ProductModel> optionalProductModel= productService.findBayId(id);
-        if (optionalProductModel.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
-        }
-        var productModel = optionalProductModel.get();
-
-        productModel.setName(productDto.getName());
-        productModel.setDescription(productDto.getDescription());
-        productModel.setPrice(productDto.getPrice());
-        productModel.setAvailable(productDto.getAvailable());
-        productModel.setCategory(productDto.getCategory());
-        productModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        productService.save(productModel);
-        return ResponseEntity.status(HttpStatus.OK).body(productModel);
-
-    }
-
-    @GetMapping("/category/{category}")
-    public ResponseEntity<Page<ProductModel>> getProductsByCategory(@PathVariable String category,
-                                                                    @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Object> updateProduct(@PathVariable(value = "id") UUID id,
+                                                @RequestBody @Valid ProductDto productDto) {
         try {
-            Category categoryEnum = Category.valueOf(category.toUpperCase());
-            Page<ProductModel> products = productService.findByCategory(categoryEnum, pageable);
-            if (products.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(products);
+            ProductModel productModel = productService.updateProduct(id, productDto);
+            return ResponseEntity.status(HttpStatus.OK).body(productModel);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 
     @GetMapping
-    public ResponseEntity<Page<ProductModel>> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "Id", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<ProductModel>> getAllProducts(@PageableDefault(page = 0, size = 10, sort = "productId", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ProductModel> productModels = productService.findAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(productModels);
     }
-
-
 }
-

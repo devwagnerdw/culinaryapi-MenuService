@@ -1,8 +1,10 @@
 package culinaryapi_Menu_Service.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import culinaryapi_Menu_Service.dtos.MenuEventDto;
 import culinaryapi_Menu_Service.enums.Category;
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +17,7 @@ public class ProductModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID productId;
 
     @Column(nullable = false, unique = true, length = 30)
     private String name;
@@ -49,12 +51,12 @@ public class ProductModel {
         this.name = name;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getProductId() {
+        return productId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
 
     public String getDescription() {
@@ -104,4 +106,12 @@ public class ProductModel {
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
     }
+
+    public MenuEventDto convertToMenuEventDto(){
+        var menuEventDto= new MenuEventDto();
+        BeanUtils.copyProperties(this, menuEventDto);
+        menuEventDto.setCategory(this.category.toString());
+        return menuEventDto;
+    }
+
 }
