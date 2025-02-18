@@ -23,6 +23,6 @@ public class MenuEventPublisher {
 
     public void publishMenuEvent(MenuEventDto menuEventDto, ActionType actionType){
         menuEventDto.setActionType(actionType.toString());
-        rabbitTemplate.convertAndSend(exchangeMenuEvent,"",menuEventDto);
+        rabbitTemplate.convertAndSend(exchangeMenuEvent,"menu.service.event",menuEventDto);
     }
 }

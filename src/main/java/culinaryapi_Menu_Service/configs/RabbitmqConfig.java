@@ -2,6 +2,7 @@ package culinaryapi_Menu_Service.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -38,8 +39,8 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public FanoutExchange menuServiceExchange() {
-        return new FanoutExchange(exchangeMenuServiceEvent);
+    public DirectExchange directMenuServiceExchange() {
+        return new DirectExchange(exchangeMenuServiceEvent);
     }
 
 }
