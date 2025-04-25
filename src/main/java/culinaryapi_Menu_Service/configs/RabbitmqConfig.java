@@ -21,7 +21,7 @@ public class RabbitmqConfig {
     }
 
 
-    @Value(value="${Culinary.broker.exchange.menuEvent}")
+    @Value(value="${Culinary.broker.exchange.menuEventExchange}")
     private String exchangeMenuServiceEvent;
 
     @Bean

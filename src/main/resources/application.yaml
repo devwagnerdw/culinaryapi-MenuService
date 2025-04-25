@@ -25,6 +25,6 @@ spring:
 Culinary:
   broker:
     exchange:
-      menuEvent: Culinary.MenuService
+      menuEventExchange: Culinary.MenuService
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==

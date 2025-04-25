@@ -18,7 +18,7 @@ public class MenuEventPublisher {
     }
 
 
-    @Value(value="${Culinary.broker.exchange.menuEvent}" )
+    @Value(value="${Culinary.broker.exchange.menuEventExchange}" )
     private String exchangeMenuEvent;
 
     public void publishMenuEvent(MenuEventDto menuEventDto, ActionType actionType){
