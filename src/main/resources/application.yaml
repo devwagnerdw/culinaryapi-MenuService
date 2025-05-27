@@ -1,11 +1,11 @@
 server:
   port: 8087
   servlet:
-    context-path: '/Culinaryapi-MenuService/'
+    context-path: '/culinary-menu-service/'
 
 spring:
   application:
-    name: Culinaryapi-MenuService
+    name: Culinarypi-MenuService
   datasource:
     url:  jdbc:postgresql://localhost:5432/Culinaryapi-MenuService
     username: postgres
@@ -28,3 +28,10 @@ Culinary:
       menuEventExchange: Culinary.MenuService
   auth:
     jwt-secret: ZHsOVU5Y6gGU3/S9WZfY5W/Ni6ZixK0I9rZ44MudSRuNYvib+ZoeP/YQNfEvXlDhEgV60Ma8csbcv6ALfOjdyMg==
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
