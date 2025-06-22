@@ -37,13 +37,9 @@ public class ProductController {
     })
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Object> registerProduct(@RequestBody @Valid ProductDto productDto) {
-        try {
-            ProductModel productModel = productService.registerProduct(productDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    public ResponseEntity<ProductModel> registerProduct(@RequestBody @Valid ProductDto productDto) {
+        ProductModel productModel = productService.registerProduct(productDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productModel);
     }
 
     @Operation(summary = "Atualizar produto", description = "Atualiza um produto existente pelo ID.")
@@ -52,15 +48,18 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
+
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateProduct(@PathVariable(value = "id") UUID id,
                                                 @RequestBody @Valid ProductDto productDto) {
-        try {
             ProductModel productModel = productService.updateProduct(id, productDto);
             return ResponseEntity.status(HttpStatus.OK).body(productModel);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    }
+
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void>deleteProduct(@PathVariable(value = "id") UUID id){
+      return  productService.deleteProduct(id);
     }
 
     @Operation(summary = "Listar produtos", description = "Retorna uma página com todos os produtos cadastrados.")
